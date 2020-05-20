@@ -9,11 +9,12 @@
 Estruturas de dados necessárias para o atendimento das operaçõesUma estrura para encapsular o lua_State que será utilizado para todas as operações, uma forma de travar/destravar o lua_State que impossibilite múltipla execução de código em um determinado estado, um identificador único para cada estado, que possibilite rápida consulta.
 
 ```c
-struct lunatik_state  
-{  
+struct klua_state  
+{
+	struct hlist_node node;
 	lua_State *L;  
 	spinlock_t lock;  
-	char *name; //Which represents a unique ID  
+	char name[KLUA_MAX_NAMESIZE]; //Which represents a unique ID  
 };
 ```
 A estrutura acima representa um único estado lunatik, a API fica responsável por controlar estas estruturas em si, oferecendo somente uma interface de manipulação à mesma. Para armazenas várias destas estruturas (o que é interessante tendo em vista que um determinado usuário pode considerar criar múliplos estados) o uso de outra estrutura se faz necessário, algumas sugestões são:
