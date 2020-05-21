@@ -23,7 +23,30 @@ As stated above, we need to have a way to store multiples instances of `struct k
 
 ## Error handling offered by the API
 
-Refazer isso baseado nos erros utilizados pelo nflua
+In order to offer a propper way to users treat errors which can be generated during the use of this API, some macros were defined to conduct the user to do what is needed depending on the got error. For this, each error has the correlation with the context in which it was generated. You can see the errors (i.e the possible return values) returned by the function below.
+
+### States creation context
+
+```c
+STATE_CREATION_ERROR
+STATE_CREATION_SUCCESS
+```
+
+### States deletion context
+
+```c
+STATE_DELETION_ERROR
+STATE_DELETION_SUCCESS
+```
+
+### Code execution context
+
+```c
+CODE_EXEC_ERROR
+CODE_EXEC_SUCCESS
+```
+
+Whenever it's needed to check the returned value of some opeation it's required to use these macros above. They are defined at `states.h`
 
 ## API functions signatures and working
 
