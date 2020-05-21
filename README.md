@@ -8,18 +8,21 @@
 
 ## Needed data structures to accomplish the operations
 
-In order to accomplish the operations offered by the API, it was created the klua_state which represents a state from lunatik. To do what the API needs we need to have a way to storage multiples instances of `klua_state`s, for this purpose we have the varible called `node` which will be explained ahead, the lua state responsible for the execution of lua code is storaged in the variable `L`, `lock` is a variable responsable for the concorrency control, last but not least we have `name` which work as a unique indetifier for the state.
+In order to accomplish the operations offered by the API, it was created the klua_state which represents a state from lunatik. To do what the API needs we need to have a way to storage multiples instances of `klua_state`s, for this purpose we have the varible called `node` which will be explained ahead, the lua state responsible for the execution of lua code is storaged in the variable `L`, `lock` is a variable responsable for the concorrency control, for reference counter (i.e how many process or users are using some state) we have the variavle `refcount`,last but not least we have `name` which work as a unique indetifier for the state.
 
 ```c
 struct klua_state  
 {
 	struct hlist_node node;
 	lua_State *L;  
-	spinlock_t lock;  
+	spinlock_t lock;
+	refcount_t refcount;
 	char name[KLUA_MAX_NAMESIZE]; //Which represents a unique ID  
 };
 ```
 As stated above, we need to have a way to store multiples instances of `struct klua_state`s, for this we use a kernel data structure called kernel hash table. Since the kernel hash table is composed by an array of buckets which storages generic data, we need to have a pointer to the beggining of each bucket, for this we have the variable `node` present in the definition of `struct klua_state`. One hash function is used to map the name of the state to a integer which will serve as key for the state in the kernel hash table.
+
+
 
 ## Error handling offered by the API
 
